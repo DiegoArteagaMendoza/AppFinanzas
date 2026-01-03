@@ -6,8 +6,9 @@ class Cuentas(models.Model):
     c_tipo = models.CharField(max_length=50, null=False)
     c_banco = models.CharField(max_length=50, null=False)
     c_nombre = models.CharField(max_length=100, null=False)
-    u_rut = models.CharField(max_length=12, null=False)
     c_estado = models.BooleanField(default=True)
+    c_ident = models.IntegerField(null=False, default=0)
+    u_rut = models.CharField(max_length=12, null=False)
     
     # credito seccion
     c_cupo = models.IntegerField(null=True, blank=True)

@@ -22,3 +22,10 @@ Buscar Cuentas
 @api_view(['GET'])
 def buscar_cuenta(request):
     return CuentasQueryset.buscar_cuentas(request)
+
+"""
+Actualizar Cuenta
+"""
+@api_view(['PUT'])
+def actualizar_cuenta(request):
+    return CuentasQueryset.actualizar_cuenta(request)
