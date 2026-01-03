@@ -121,3 +121,26 @@ class CuentasQueryset(models.QuerySet):
             
         serializer = CuentasSerializer(cuentas, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    @staticmethod
+    def buscar_cuenta_id(request):
+        Cuenta = apps.get_model('cuentas', 'Cuentas')
+        c_id = request.data.get('c_id', None)
+        
+        print(c_id)
+                        
+        if not c_id:
+            return Response({
+                "error": "Debe proporcionar el id"
+            }, status=status.HTTP_400_BAD_REQUEST)
+            
+        try:
+            if c_id is not None:
+                cuentas = Cuenta.objects.get(c_id=c_id)
+        except Cuenta.DoesNotExist:
+            return Response({
+                "error": "Cuenta no encontrada"
+            }, status=status.HTTP_403_FORBIDDEN)
+            
+        serializer = CuentasSerializer(cuentas)
+        return Response(serializer.data, status=status.HTTP_200_OK)

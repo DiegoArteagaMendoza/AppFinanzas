@@ -28,6 +28,12 @@ Buscar Cuentas
 def buscar_cuenta(request):
     return CuentasQueryset.buscar_cuentas(request)
 
+@api_view(['GET'])
+#@authentication_classes([CustomJWTAuthentication])
+#@permission_classes([IsAuthenticated])
+def buscar_cuenta_id(request):
+    return CuentasQueryset.buscar_cuenta_id(request)
+
 """
 Actualizar Cuenta
 """
