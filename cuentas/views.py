@@ -13,8 +13,8 @@ Registrar Cuenta
 """
 
 @api_view(['POST'])
-@authentication_classes([CustomJWTAuthentication])
-@permission_classes([IsAuthenticated])
+#@authentication_classes([CustomJWTAuthentication])
+#@permission_classes([IsAuthenticated])
 def crear_cuenta(request):
     return CuentasQueryset.registrar_cuenta(request)
 
@@ -23,8 +23,8 @@ Buscar Cuentas
 """
 
 @api_view(['GET'])
-@authentication_classes([CustomJWTAuthentication])
-@permission_classes([IsAuthenticated])
+#@authentication_classes([CustomJWTAuthentication])
+#@permission_classes([IsAuthenticated])
 def buscar_cuenta(request):
     return CuentasQueryset.buscar_cuentas(request)
 
@@ -32,7 +32,7 @@ def buscar_cuenta(request):
 Actualizar Cuenta
 """
 @api_view(['PUT'])
-@authentication_classes([CustomJWTAuthentication])
-@permission_classes([IsAuthenticated])
+#@authentication_classes([CustomJWTAuthentication])
+#@permission_classes([IsAuthenticated])
 def actualizar_cuenta(request):
     return CuentasQueryset.actualizar_cuenta(request)
