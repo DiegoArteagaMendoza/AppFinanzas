@@ -12,6 +12,10 @@ class Usuario(models.Model):
     
     def __str__(self):
         return f"{self.u_nombres} {self.u_apellidos}"
+    
+    @property
+    def is_authenticated(self):
+        return True
         
 class Perfil(models.Model):
     p_id = models.AutoField(primary_key=True)

@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from .serializer import UsuarioSerializer
 from django.contrib.auth.hashers import make_password, check_password
+from rest_framework_simplejwt.tokens import RefreshToken
 from django.conf import settings
 
 class UsuarioQueryset(models.QuerySet):
@@ -18,12 +19,7 @@ class UsuarioQueryset(models.QuerySet):
         u_password = request.data.get("password")
         u_rut = request.data.get("rut")
         u_edad = request.data.get("edad")
-        
-        # if not u_nombres or not u_apellidos or not u_correo or not u_password or not u_rut or not u_edad:
-        #     return Response({
-        #         "error": "Todos los datos deben ser ingresados"
-        #     },  status=status.HTTP_400_BAD_REQUEST)
-            
+                    
         correo_obj = Usuario.objects.filter(u_correo = u_correo).first()
         if correo_obj is not None:
             return Response ({
@@ -48,7 +44,6 @@ class UsuarioQueryset(models.QuerySet):
                 
                 print(data)
                 
-                #usuario = serializer.save()
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             except Exception as e:
                 return Response(
@@ -60,10 +55,11 @@ class UsuarioQueryset(models.QuerySet):
     @staticmethod
     def actualizar_usuario(request):
         Usuario = apps.get_model('usuarios', 'Usuario')
-        u_rut = request.data.get('rut', None)
+        #u_rut = request.data.get('rut', None)
+        usaurio = request.user
         
         try:
-            usuario = Usuario.objects.get(u_rut = u_rut)
+            usuario = Usuario.objects.get(u_rut = usuario.u_rut)
         except:
             return Response({
                 'error': 'Usuario no encontrado'
@@ -90,8 +86,6 @@ class IniciarSesion(models.QuerySet):
         password = request.data.get('u_password', None)
         
         if not correo or not password:
-            print(correo)
-            print(password)
             return Response({
                 "error": 'Debe proporcionar Rut o Correo y Contraseña'
             }, status=status.HTTP_400_BAD_REQUEST)
@@ -99,15 +93,28 @@ class IniciarSesion(models.QuerySet):
         try:            
             if correo is not None:
                 usuario = Usuario.objects.get(u_correo=correo)
-                
         except Usuario.DoesNotExist:
             return Response({
                 "error":'Usuario no encontrado'
             }, status=status.HTTP_403_FORBIDDEN)
             
         if check_password(password, usuario.u_password):
-            serializer = UsuarioSerializer(usuario)
-            return Response("Login exitoso", status=status.HTTP_200_OK)
+            
+            refresh = RefreshToken()
+            refresh['user_id'] = usuario.u_id
+            
+            return Response({
+                'refresh': str(refresh),
+                'access': str(refresh.access_token),
+                'usuario': {
+                    'nombres': usuario.u_nombres,
+                    'apellidos': usuario.u_apellidos,
+                    'correo': usuario.u_correo
+                }
+            }, status=status.HTTP_200_OK)
+            
+            #serializer = UsuarioSerializer(usuario)
+            #return Response("Login exitoso", status=status.HTTP_200_OK)
         else:
             return Response(
                 {"error": "Contraseña incorrecta"},
