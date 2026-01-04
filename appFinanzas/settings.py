@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     'usuarios',
 =======
     #'usuarios',
@@ -49,6 +50,11 @@ INSTALLED_APPS = [
     'usuarios',
 >>>>>>> devUsuarios
     'cuentas',
+=======
+    # 'usuarios',
+    # 'cuentas',
+    'movimientos'
+>>>>>>> devMovimientos
 ]
 
 MIDDLEWARE = [
