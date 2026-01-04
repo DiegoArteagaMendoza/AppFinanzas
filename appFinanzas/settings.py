@@ -40,10 +40,14 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
 <<<<<<< HEAD
+<<<<<<< HEAD
     'usuarios',
 =======
     #'usuarios',
 >>>>>>> devCuentas
+=======
+    'usuarios',
+>>>>>>> devUsuarios
     'cuentas',
 ]
 
