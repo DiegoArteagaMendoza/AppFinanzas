@@ -7,7 +7,7 @@ class Movimientos(models.Model):
     m_monto = models.IntegerField(null=False, blank=False)
     m_motivo = models.TextField()
     m_fecha = models.DateField(null=False, blank=False)
-    m_persona = models.IntegerField(null=False, blank=False, default=0)
+    m_persona = models.CharField(null=False, blank=False, default="0")
     c_id = models.IntegerField(null=False, blank=False)
     u_rut = models.CharField(max_length=12, null=False, blank=False)
     
