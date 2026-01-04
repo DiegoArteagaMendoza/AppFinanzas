@@ -13,13 +13,8 @@ Registrar Cuenta
 """
 
 @api_view(['POST'])
-<<<<<<< HEAD
 @authentication_classes([CustomJWTAuthentication])
 @permission_classes([IsAuthenticated])
-=======
-#@authentication_classes([CustomJWTAuthentication])
-#@permission_classes([IsAuthenticated])
->>>>>>> devCuentas
 def crear_cuenta(request):
     return CuentasQueryset.registrar_cuenta(request)
 
@@ -28,19 +23,14 @@ Buscar Cuentas
 """
 
 @api_view(['GET'])
-<<<<<<< HEAD
 @authentication_classes([CustomJWTAuthentication])
 @permission_classes([IsAuthenticated])
-=======
-#@authentication_classes([CustomJWTAuthentication])
-#@permission_classes([IsAuthenticated])
->>>>>>> devCuentas
 def buscar_cuenta(request):
     return CuentasQueryset.buscar_cuentas(request)
 
 @api_view(['GET'])
-#@authentication_classes([CustomJWTAuthentication])
-#@permission_classes([IsAuthenticated])
+@authentication_classes([CustomJWTAuthentication])
+@permission_classes([IsAuthenticated])
 def buscar_cuenta_id(request):
     return CuentasQueryset.buscar_cuenta_id(request)
 
@@ -48,12 +38,16 @@ def buscar_cuenta_id(request):
 Actualizar Cuenta
 """
 @api_view(['PUT'])
-<<<<<<< HEAD
 @authentication_classes([CustomJWTAuthentication])
 @permission_classes([IsAuthenticated])
-=======
-#@authentication_classes([CustomJWTAuthentication])
-#@permission_classes([IsAuthenticated])
->>>>>>> devCuentas
 def actualizar_cuenta(request):
     return CuentasQueryset.actualizar_cuenta(request)
+
+"""
+Actualizar Saldo
+"""
+@api_view(['PUT'])
+@authentication_classes([CustomJWTAuthentication])
+@permission_classes([IsAuthenticated])
+def actualizar_saldo_cuenta(request):
+    return CuentasQueryset.actualizar_saldo(request)

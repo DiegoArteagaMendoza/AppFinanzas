@@ -39,22 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_simplejwt',
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
     'usuarios',
-=======
-    #'usuarios',
->>>>>>> devCuentas
-=======
-    'usuarios',
->>>>>>> devUsuarios
     'cuentas',
-=======
-    # 'usuarios',
-    # 'cuentas',
     'movimientos'
->>>>>>> devMovimientos
 ]
 
 MIDDLEWARE = [

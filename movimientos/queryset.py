@@ -6,6 +6,7 @@ from rest_framework import status
 from .serializer import MovimientosSerializer
 from django.conf import settings
 from .tipoPersonas import tipo_personas
+from cuentas.queryset import CuentasQueryset
 
 class MovimientosQueryset(models.QuerySet):
     
@@ -42,6 +43,7 @@ class MovimientosQueryset(models.QuerySet):
         m_monto = request.data.get('m_monto')
         m_fecha = request.data.get('m_fecha')
         m_persona = request.data.get('m_persona')
+        c_id = request.data.get('c_id')
         
         print(request)
         
@@ -63,6 +65,7 @@ class MovimientosQueryset(models.QuerySet):
             try:
                 serializer.save()
                 # ACTUALIZAR SALDO SUMAR DINERO MEDIANTE RESPUESTA SATISFACTORIA, MANDA ACTUALIZAR
+                CuentasQueryset.actualizar_saldo(request, c_id, m_monto, m_tipo)
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             except Exception as e:
                 return Response({
@@ -77,6 +80,7 @@ class MovimientosQueryset(models.QuerySet):
         m_monto = request.data.get('m_monto')
         m_fecha = request.data.get('m_fecha')
         m_persona = request.data.get('m_persona')
+        c_id = request.data.get('c_id')
         
         if not m_tipo or not m_monto or not m_fecha:
             return Response({
@@ -100,6 +104,7 @@ class MovimientosQueryset(models.QuerySet):
             try:
                 serializer.save()
                 # ACTUALIZAR SALDO RESTAR DINERO MEDIANTE RESPUESTA SATISFACTORIA, MANDA ACTUALIZAR
+                CuentasQueryset.actualizar_saldo(request, c_id, m_monto, m_tipo)
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             except Exception as e:
                 return Response({

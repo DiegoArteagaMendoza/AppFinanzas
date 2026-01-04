@@ -94,6 +94,72 @@ class CuentasQueryset(models.QuerySet):
                 return Response({
                     "error": "Error al actualizar la cuenta", "detalle": str(e)
                 }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+                
+    @staticmethod
+    def actualizar_saldo(request, c_id, monto, tipo_mov):
+        if monto <= 0:
+            return Response({"error": "El monto debe ser mayor a 0"}, status=status.HTTP_400_BAD_REQUEST)
+
+        Cuenta = apps.get_model('cuentas', 'Cuentas')
+        
+        try:
+            cuenta = Cuenta.objects.get(c_id=c_id)
+        except Cuenta.DoesNotExist:
+            return Response({
+                "error": "No hay cuentas para el usuario"
+            }, status=status.HTTP_404_NOT_FOUND)
+
+        tipo_cuenta = cuenta.c_tipo.lower()
+        
+        # --- LÓGICA 1: TARJETAS DE CRÉDITO ---
+        if 'credito' in tipo_cuenta:
+            cupo_total = cuenta.c_cupo or 0
+            usado_actual = cuenta.c_usado or 0
+
+            if tipo_mov == 'egreso':
+                if (usado_actual + monto) > cupo_total:
+                    return Response({"error": "Cupo insuficiente"}, status=status.HTTP_400_BAD_REQUEST)
+                cuenta.c_usado = usado_actual + monto
+
+            elif tipo_mov == 'ingreso':
+                if (usado_actual - monto) < 0:
+                    cuenta.c_usado = 0
+                else:
+                    cuenta.c_usado = usado_actual - monto
+                    
+        # --- LÓGICA 2: DÉBITO / CORRIENTE / VISTA ---
+        else:
+            disponible = cuenta.c_disponible or 0
+            
+            if tipo_mov == 'ingreso':
+                cuenta.c_disponible = disponible + monto
+                
+            elif tipo_mov == 'egreso':
+                if disponible >= monto:
+                    cuenta.c_disponible = disponible - monto
+                else:
+                    # --- LÓGICA EXTRA: LÍNEA DE CRÉDITO ---
+                    if cuenta.c_lineaCredito:
+                        faltante = monto - disponible
+                        linea_cupo = cuenta.c_lineaCupo or 0
+                        linea_usado = cuenta.c_lineaUsado or 0
+                        
+                        if (linea_usado + faltante) <= linea_cupo:
+                            cuenta.c_disponible = 0
+                            cuenta.c_lineaUsado = linea_usado + faltante
+                        else:
+                            return Response({"error": "Saldo y línea de crédito insuficientes"}, status=status.HTTP_400_BAD_REQUEST)
+                    else:
+                        return Response({"error": "Saldo insuficiente"}, status=status.HTTP_400_BAD_REQUEST)
+
+        cuenta.save()
+
+        return Response({
+            "mensaje": "Saldo actualizado correctamente",
+            "cuenta": cuenta.c_nombre,
+            "nuevo_saldo_disponible": cuenta.c_disponible,
+            "nuevo_saldo_usado": cuenta.c_usado
+        }, status=status.HTTP_200_OK)
     
     @staticmethod
     def buscar_cuentas(request):
@@ -119,8 +185,29 @@ class CuentasQueryset(models.QuerySet):
                 "error": "No hay cuentas para el usuario"
             }, status=status.HTTP_403_FORBIDDEN)
             
+        # serializer = CuentasSerializer(cuentas, many=True)
+        # return Response(serializer.data, status=status.HTTP_200_OK)
         serializer = CuentasSerializer(cuentas, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        
+        # 1. Obtenemos los datos serializados (es una lista de diccionarios)
+        data = serializer.data 
+        
+        # 2. Iteramos sobre cada cuenta para inyectar el campo extra
+        for cuenta in data:
+            # Validamos que los valores existan (por si vienen nulos de la BD)
+            cupo = cuenta.get('c_cupo') or 0
+            usado = cuenta.get('c_usado') or 0
+            tipo = cuenta.get('c_tipo', '').lower()
+
+            if 'credito' in tipo:
+                # Calculamos el disponible de la tarjeta
+                cuenta['saldo_visual_disponible'] = cupo - usado
+            else:
+                # Para débito/corriente, el disponible es directo
+                cuenta['saldo_visual_disponible'] = cuenta.get('c_disponible')
+
+        return Response(data, status=status.HTTP_200_OK)
+    
     
     @staticmethod
     def buscar_cuenta_id(request):

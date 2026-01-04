@@ -16,8 +16,8 @@ Registrar Cuenta
 """
 
 @api_view(['POST'])
-# @authentication_classes([CustomJWTAuthentication])
-# @permission_classes([IsAuthenticated])
+@authentication_classes([CustomJWTAuthentication])
+@permission_classes([IsAuthenticated])
 def ingresar_movimiento(request):
     return MovimientosQueryset.ingresar_dinero(request)
 
@@ -26,8 +26,8 @@ Buscar Cuentas
 """
 
 @api_view(['GET'])
-# @authentication_classes([CustomJWTAuthentication])
-# @permission_classes([IsAuthenticated])
+@authentication_classes([CustomJWTAuthentication])
+@permission_classes([IsAuthenticated])
 def buscar_movimiento(request):
     return MovimientosQueryset.buscar_movimientos(request)
 
@@ -35,7 +35,7 @@ def buscar_movimiento(request):
 Actualizar Cuenta
 """
 @api_view(['POST'])
-# @authentication_classes([CustomJWTAuthentication])
-# @permission_classes([IsAuthenticated])
+@authentication_classes([CustomJWTAuthentication])
+@permission_classes([IsAuthenticated])
 def sacar_movimiento(request):
     return MovimientosQueryset.sacar_dinero(request)
