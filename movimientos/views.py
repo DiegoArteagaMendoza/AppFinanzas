@@ -25,7 +25,7 @@ def ingresar_movimiento(request):
 Buscar Cuentas
 """
 
-@api_view(['GET'])
+@api_view(['POST'])
 @authentication_classes([CustomJWTAuthentication])
 @permission_classes([IsAuthenticated])
 def buscar_movimiento(request):

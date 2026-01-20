@@ -13,7 +13,7 @@ from varios.authentication import CustomJWTAuthentication
 Login
 """
 
-@api_view(['GET'])
+@api_view(['POST'])
 @authentication_classes([])
 @permission_classes([])
 def login(request):

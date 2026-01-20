@@ -22,13 +22,13 @@ def crear_cuenta(request):
 Buscar Cuentas
 """
 
-@api_view(['GET'])
+@api_view(['POST'])
 @authentication_classes([CustomJWTAuthentication])
 @permission_classes([IsAuthenticated])
 def buscar_cuenta(request):
     return CuentasQueryset.buscar_cuentas(request)
 
-@api_view(['GET'])
+@api_view(['POST'])
 @authentication_classes([CustomJWTAuthentication])
 @permission_classes([IsAuthenticated])
 def buscar_cuenta_id(request):
